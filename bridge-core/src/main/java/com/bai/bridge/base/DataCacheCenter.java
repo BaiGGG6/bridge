@@ -7,19 +7,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DataCacheCenter {
+public enum DataCacheCenter {
+    INSTANCE;
 
     // sign和version的映射
-    private static Map<String, List<String>> signAndVersionMap = new HashMap<>();
+    private Map<String, List<String>> signAndVersionMap = new HashMap<>();
 
     // sign:version 插件缓存
-    private static Map<String, PluginMeta> pluginMetaMap = new HashMap<>();
+    private Map<String, PluginMeta> pluginMetaMap = new HashMap<>();
 
     // sign:version 中所有的插槽
-    private static Map<String, List<String>> signVersionSlotMap = new HashMap<>();
+    private Map<String, List<String>> signVersionSlotMap = new HashMap<>();
 
     // 所有插槽和实现
-    private static Map<String, List<Class<?>>> slotImplMap = new HashMap<>();
+    private Map<String, List<Class<?>>> slotImplMap = new HashMap<>();
 
     /**
      * 构建key sign:version
@@ -27,11 +28,11 @@ public class DataCacheCenter {
      * @param version
      * @return
      */
-    private static String buildKey(String sign, String version){
+    private String buildKey(String sign, String version){
         return sign + BridgeCoreConstants.SEPARATE + version;
     }
 
-    public static void landingPluginInfo(String sign, String version, PluginMeta pluginMeta, List<Class<?>> classList){
+    public void landingPluginInfo(String sign, String version, PluginMeta pluginMeta, List<Class<?>> classList){
         List<String> list = signAndVersionMap.getOrDefault(sign, new ArrayList<>());
         list.add(version);
         signAndVersionMap.put(sign, list);
@@ -39,7 +40,7 @@ public class DataCacheCenter {
         pluginMetaMap.put(buildKey(sign, version), pluginMeta);
     }
 
-    public static void landingSignVersionSlotMap(String sign, String version, String slotName){
+    public void landingSignVersionSlotMap(String sign, String version, String slotName){
         String key = buildKey(sign, version);
         List<String> list = signVersionSlotMap.getOrDefault(key, new ArrayList<>());
         if(list.contains(slotName)){
@@ -49,13 +50,13 @@ public class DataCacheCenter {
         signVersionSlotMap.put(key, list);
     }
 
-    public static void landingSlotImpl(String slotName, Class<?> cls){
+    public void landingSlotImpl(String slotName, Class<?> cls){
         List<Class<?>> list = slotImplMap.getOrDefault(slotName, new ArrayList<>());
         list.add(cls);
         slotImplMap.put(slotName, list);
     }
 
-    public static void releasePluginInfo(String sign, String version){
+    public void releasePluginInfo(String sign, String version){
         List<String> list = signAndVersionMap.getOrDefault(sign, new ArrayList<>());
         list.remove(version);
         if(list.isEmpty()){
@@ -64,7 +65,7 @@ public class DataCacheCenter {
         pluginMetaMap.remove(buildKey(sign, version));
     }
 
-    public static void releaseSignVersionClassMap(String sign, String version, String slotName){
+    public void releaseSignVersionClassMap(String sign, String version, String slotName){
         String key = buildKey(sign, version);
         List<String> list = signVersionSlotMap.getOrDefault(key, new ArrayList<>());
         if (!list.contains(slotName)){
@@ -76,7 +77,7 @@ public class DataCacheCenter {
         }
     }
 
-    public static void releaseSlotImpl(String slotName, Class<?> cls){
+    public void releaseSlotImpl(String slotName, Class<?> cls){
         List<Class<?>> classList = slotImplMap.getOrDefault(slotName, new ArrayList<>());
         if(!classList.contains(cls)){
             return;
@@ -87,7 +88,7 @@ public class DataCacheCenter {
         }
     }
 
-    public static List<Map> getAllInfo(){
+    public List<Map> getAllInfo(){
         List<Map> list = new ArrayList<>();
         list.add(signAndVersionMap);
         list.add(pluginMetaMap);
@@ -96,7 +97,7 @@ public class DataCacheCenter {
         return list;
     }
 
-    public static <T> T getSlotImpl(Class<T> pClass){
+    public <T> T getSlotImpl(Class<T> pClass){
         Class<?> aClass = slotImplMap.get(pClass.getName()).get(0);
         T pluginImpl = null;
         try {
@@ -109,7 +110,7 @@ public class DataCacheCenter {
         return pluginImpl;
     }
 
-    public static PluginMeta getPluginMeta(String sign, String version) {
+    public PluginMeta getPluginMeta(String sign, String version) {
         return pluginMetaMap.get(buildKey(sign, version));
     }
 }

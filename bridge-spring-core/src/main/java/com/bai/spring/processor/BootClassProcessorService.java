@@ -10,8 +10,8 @@ public interface BootClassProcessorService {
 
     Set<BootClassEnum> getProcessBootClass();
 
-    void process(ApplicationContext applicationContext, List<Class<?>> clsList);
+    void process(ApplicationContext applicationContext, List<Class<?>> clsList, String pluginKey);
     
-    void release(ApplicationContext applicationContext, List<Class<?>> clsList);
+    void release(ApplicationContext applicationContext, List<Class<?>> clsList, String pluginKey);
 
 }

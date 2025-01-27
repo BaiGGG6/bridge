@@ -1,11 +1,12 @@
 package com.bai.spring.injector;
 
 import com.bai.spring.model.InterfaceMethodAnalyse;
+import com.bai.spring.model.MethodRequestInfoMapping;
 
 public interface UrlInjector {
 
-    void inject(InterfaceMethodAnalyse interfaceMethodAnalyse);
+    void inject(MethodRequestInfoMapping methodRequestInfoMapping);
 
-    void release(InterfaceMethodAnalyse interfaceMethodAnalyse);
+    void release(MethodRequestInfoMapping methodRequestInfoMapping);
 
 }

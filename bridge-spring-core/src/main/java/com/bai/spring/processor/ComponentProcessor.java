@@ -23,7 +23,7 @@ public class ComponentProcessor implements BootClassProcessorService{
     }
 
     @Override
-    public void process(ApplicationContext applicationContext, List<Class<?>> clsList) {
+    public void process(ApplicationContext applicationContext, List<Class<?>> clsList, String pluginKey) {
         // 加载进入ioc容器
         clsList.forEach(cls -> {
             ConfigurableApplicationContext configurableApplicationContext = (ConfigurableApplicationContext) applicationContext;
@@ -35,7 +35,7 @@ public class ComponentProcessor implements BootClassProcessorService{
     }
 
     @Override
-    public void release(ApplicationContext applicationContext, List<Class<?>> clsList) {
+    public void release(ApplicationContext applicationContext, List<Class<?>> clsList, String pluginKey) {
         clsList.forEach(cls -> {
             ConfigurableApplicationContext configurableApplicationContext = (ConfigurableApplicationContext) applicationContext;
             DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) configurableApplicationContext.getBeanFactory();

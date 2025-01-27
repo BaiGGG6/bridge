@@ -3,6 +3,7 @@ package com.bai.spring;
 import com.bai.bridge.base.BridgeCoreConstants;
 import com.bai.bridge.model.PluginMeta;
 import com.bai.spring.context.BridgeApplicationContext;
+import com.bai.spring.context.ContextCacheCenter;
 import com.bai.spring.model.enums.BootClassEnum;
 import com.bai.bridge.model.enums.SpaceMode;
 import com.bai.spring.processor.BootClassProcessorFactory;
@@ -18,13 +19,11 @@ import java.util.Map;
 public enum PluginAdapter {
     INSTANCE;
 
+    // 主程序的上下文
     private ApplicationContext applicationContext;
 
-    // 存储插件所使用的applicationContext
-    private final Map<String, ApplicationContext> applicationContextMap = new HashMap<>();
-
     // 初始化
-    public void initPluginAdapter(ApplicationContext context) {
+    public void init(ApplicationContext context) {
         applicationContext = context;
     }
 
@@ -58,19 +57,21 @@ public enum PluginAdapter {
     public void process(PluginMeta pluginMeta, Map<BootClassEnum, List<Class<?>>> clsMap) {
         // 获取配置里上下文隔离配置，选择对应的上下文
         ApplicationContext currentAppContext = choseApplicationContext(pluginMeta.getSpaceMode());
+        String pluginKey = buildKey(pluginMeta.getSign(), pluginMeta.getVersion());
         // 存入缓存
-        applicationContextMap.put(buildKey(pluginMeta.getSign(), pluginMeta.getVersion()), applicationContext);
+        ContextCacheCenter.INSTANCE.landingContext(pluginKey, currentAppContext);
         // 获取所有类型的执行器
         for (BootClassEnum value : BootClassEnum.values()) {
             BootClassProcessorService processor = BootClassProcessorFactory.INSTANCE.getProcessor(value);
             // 进行加载
-            processor.process(currentAppContext, clsMap.getOrDefault(value, new ArrayList<>()));
+            processor.process(currentAppContext, clsMap.getOrDefault(value, new ArrayList<>()), pluginKey);
         }
     }
 
     public void release(PluginMeta pluginMeta, Map<BootClassEnum, List<Class<?>>> clsMap) {
+        String pluginKey = buildKey(pluginMeta.getSign(), pluginMeta.getVersion());
         // 获取对应的上下文进行数据清空
-        ApplicationContext appContext = applicationContextMap.get(buildKey(pluginMeta.getSign(), pluginMeta.getVersion()));
+        ApplicationContext appContext = ContextCacheCenter.INSTANCE.getContext(pluginKey);
         // 若为空，则是未加载
         if(appContext == null){
             return;
@@ -79,8 +80,10 @@ public enum PluginAdapter {
         for (BootClassEnum value : BootClassEnum.values()) {
             BootClassProcessorService processor = BootClassProcessorFactory.INSTANCE.getProcessor(value);
             // 进行加载
-            processor.release(appContext, clsMap.getOrDefault(value, new ArrayList<>()));
+            processor.release(appContext, clsMap.getOrDefault(value, new ArrayList<>()), pluginKey);
         }
+        // 从上下文中心释放
+        ContextCacheCenter.INSTANCE.releaseContext(pluginKey);
     }
 
 }

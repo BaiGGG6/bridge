@@ -84,7 +84,7 @@ public class PluginProcessor {
             }
         }
         // 插件加载进入数据中心
-        DataCacheCenter.landingPluginInfo(pluginMeta.getSign(), pluginMeta.getVersion(), pluginMeta, classList);
+        DataCacheCenter.INSTANCE.landingPluginInfo(pluginMeta.getSign(), pluginMeta.getVersion(), pluginMeta, classList);
         // 解析器进行加载
         analysies.forEach(item -> item.analyse(pluginMeta));
     }
@@ -105,7 +105,7 @@ public class PluginProcessor {
                 }
             }
             // 插件加载进入数据中心
-            DataCacheCenter.landingPluginInfo(pluginMeta.getSign(), pluginMeta.getVersion(), pluginMeta, classList);
+            DataCacheCenter.INSTANCE.landingPluginInfo(pluginMeta.getSign(), pluginMeta.getVersion(), pluginMeta, classList);
             // 解析器进行加载
             analysies.forEach(item -> item.analyse(pluginMeta));
         } finally {
@@ -126,7 +126,7 @@ public class PluginProcessor {
         }
         log.info("开始释放插件：{} - {} , {}", pluginMeta.getSign(), pluginMeta.getVersion(), pluginMeta.getJarName());
         long start = System.currentTimeMillis();
-        DataCacheCenter.releasePluginInfo(pluginMeta.getSign(), pluginMeta.getVersion());
+        DataCacheCenter.INSTANCE.releasePluginInfo(pluginMeta.getSign(), pluginMeta.getVersion());
         analysies.forEach(analyse -> analyse.release(pluginMeta));
         log.info("释放插件完成：{} - {} , {}, 耗时: {}ms", pluginMeta.getSign(), pluginMeta.getVersion(), pluginMeta.getJarName(), System.currentTimeMillis() - start);
     }

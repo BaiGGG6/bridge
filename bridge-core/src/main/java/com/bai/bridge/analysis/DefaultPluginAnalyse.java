@@ -13,9 +13,9 @@ public class DefaultPluginAnalyse extends PluginAnalyseAbstract {
             PluginExSlotInfo annotation = cls.getAnnotation(PluginExSlotInfo.class);
             if(annotation != null){
                 // 存储插槽和插槽实现映射
-                DataCacheCenter.landingSlotImpl(annotation.slot(), cls);
+                DataCacheCenter.INSTANCE.landingSlotImpl(annotation.slot(), cls);
                 // 存储插件和插槽映射
-                DataCacheCenter.landingSignVersionSlotMap(pluginMeta.getSign(), pluginMeta.getVersion(), annotation.slot());
+                DataCacheCenter.INSTANCE.landingSignVersionSlotMap(pluginMeta.getSign(), pluginMeta.getVersion(), annotation.slot());
             }
         });
     }
@@ -26,9 +26,9 @@ public class DefaultPluginAnalyse extends PluginAnalyseAbstract {
             PluginExSlotInfo annotation = cls.getAnnotation(PluginExSlotInfo.class);
             if(annotation != null){
                 // 存储插槽和插槽实现映射
-                DataCacheCenter.releaseSlotImpl(annotation.slot(), cls);
+                DataCacheCenter.INSTANCE.releaseSlotImpl(annotation.slot(), cls);
                 // 存储插件和插槽映射
-                DataCacheCenter.releaseSignVersionClassMap(pluginMeta.getSign(), pluginMeta.getVersion(), annotation.slot());
+                DataCacheCenter.INSTANCE.releaseSignVersionClassMap(pluginMeta.getSign(), pluginMeta.getVersion(), annotation.slot());
             }
         });
     }

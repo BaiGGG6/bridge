@@ -1,6 +1,8 @@
 package com.bai.spring;
 
 import com.bai.bridge.PluginStarter;
+import com.bai.spring.context.ContextCacheCenter;
+import com.bai.spring.injector.UrlCacheCenter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationContext;
@@ -16,7 +18,9 @@ public class SpringBootListener implements ApplicationListener<ApplicationReadyE
         log.info("boot兼容插件出初始化开始");
         long start = System.currentTimeMillis();
         ApplicationContext applicationContext = event.getApplicationContext();
-        PluginAdapter.INSTANCE.initPluginAdapter(applicationContext);
+        UrlCacheCenter.INSTANCE.init(applicationContext);
+        ContextCacheCenter.INSTANCE.init(applicationContext);
+        PluginAdapter.INSTANCE.init(applicationContext);
         log.info("boot兼容插件出初始化完成, 耗时：{} ms", System.currentTimeMillis() - start);
         PluginStarter.start();
     }

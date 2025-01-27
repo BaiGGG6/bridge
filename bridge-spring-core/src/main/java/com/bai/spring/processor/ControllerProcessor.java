@@ -1,5 +1,6 @@
 package com.bai.spring.processor;
 
+import com.bai.spring.injector.UrlCacheCenter;
 import com.bai.spring.model.InterfaceMethodAnalyse;
 import com.bai.spring.injector.MvcUrlInjector;
 import com.bai.spring.model.enums.BootClassEnum;
@@ -25,7 +26,7 @@ public class ControllerProcessor implements BootClassProcessorService{
     }
 
     @Override
-    public void process(ApplicationContext applicationContext, List<Class<?>> clsList) {
+    public void process(ApplicationContext applicationContext, List<Class<?>> clsList, String pluginKey) {
         // 加载进入ioc容器
         clsList.forEach(cls -> {
             ConfigurableApplicationContext configurableApplicationContext = (ConfigurableApplicationContext) applicationContext;
@@ -59,15 +60,15 @@ public class ControllerProcessor implements BootClassProcessorService{
                     continue;
                 }
                 analyseInfo.buildFinalPath(prePaths);
-                analyseInfo.buildMethodRequestInfoMapping(config, declaredMethod, cls);
+                analyseInfo.buildMethodRequestInfoMapping(config, declaredMethod, cls, pluginKey);
                 // 注入mvc
-                mvcUrlInjector.inject(analyseInfo);
+                mvcUrlInjector.inject(analyseInfo.getMethodRequestInfoMapping());
             }
         });
     }
 
     @Override
-    public void release(ApplicationContext applicationContext, List<Class<?>> clsList) {
+    public void release(ApplicationContext applicationContext, List<Class<?>> clsList, String pluginKey) {
         clsList.forEach(cls -> {
             ConfigurableApplicationContext configurableApplicationContext = (ConfigurableApplicationContext) applicationContext;
             DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) configurableApplicationContext.getBeanFactory();
@@ -91,7 +92,7 @@ public class ControllerProcessor implements BootClassProcessorService{
             // 处理mapping
             if(cls.isAnnotationPresent(RequestMapping.class)){
                 RequestMapping annotation = cls.getAnnotation(RequestMapping.class);
-                prePaths = annotation.path();
+                prePaths = annotation.value();
             }
             Method[] declaredMethods = cls.getDeclaredMethods();
             for (Method declaredMethod : declaredMethods) {
@@ -101,9 +102,9 @@ public class ControllerProcessor implements BootClassProcessorService{
                 }
                 // 构建最终地址
                 analyseInfo.buildFinalPath(prePaths);
-                analyseInfo.buildMethodRequestInfoMapping(config, declaredMethod, cls);
+                analyseInfo.buildMethodRequestInfoMapping(config, declaredMethod, cls, pluginKey);
                 // 注入mvc
-                mvcUrlInjector.release(analyseInfo);
+                mvcUrlInjector.release(analyseInfo.getMethodRequestInfoMapping());
             }
         });
     }

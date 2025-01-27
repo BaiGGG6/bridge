@@ -3,6 +3,7 @@ package com.bai.spring.model;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.context.ApplicationContext;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
@@ -30,12 +31,13 @@ public class InterfaceMethodAnalyse {
     // 方法请求映射
     private MethodRequestInfoMapping methodRequestInfoMapping;
 
-    public void buildMethodRequestInfoMapping(RequestMappingInfo.BuilderConfiguration config, Method method, Class<?> cls){
+    public void buildMethodRequestInfoMapping(RequestMappingInfo.BuilderConfiguration config, Method method, Class<?> cls, String pluginKey){
         Assert.notEmpty(finalPaths, "finalPaths is empty");
         Assert.notEmpty(requestMethod, "requestMethod is empty");
         Assert.notNull(method, "method is null");
         Assert.notNull(config, "RequestMappingInfo.BuilderConfiguration is null");
         methodRequestInfoMapping = MethodRequestInfoMapping.builder()
+                .pluginKey(pluginKey)
                 .method(method)
                 .cls(cls)
                 .requestMappingInfo(
