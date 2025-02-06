@@ -1,5 +1,6 @@
 package com.bai.spring.processor;
 
+import com.bai.bridge.model.PluginMeta;
 import com.bai.spring.model.enums.BootClassEnum;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
@@ -23,7 +24,7 @@ public class ComponentProcessor implements BootClassProcessorService{
     }
 
     @Override
-    public void process(ApplicationContext applicationContext, List<Class<?>> clsList, String pluginKey) {
+    public void process(ApplicationContext applicationContext, List<Class<?>> clsList, PluginMeta pluginMeta) {
         // 加载进入ioc容器
         clsList.forEach(cls -> {
             ConfigurableApplicationContext configurableApplicationContext = (ConfigurableApplicationContext) applicationContext;
@@ -35,7 +36,7 @@ public class ComponentProcessor implements BootClassProcessorService{
     }
 
     @Override
-    public void release(ApplicationContext applicationContext, List<Class<?>> clsList, String pluginKey) {
+    public void release(ApplicationContext applicationContext, List<Class<?>> clsList, PluginMeta pluginMeta) {
         clsList.forEach(cls -> {
             ConfigurableApplicationContext configurableApplicationContext = (ConfigurableApplicationContext) applicationContext;
             DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) configurableApplicationContext.getBeanFactory();

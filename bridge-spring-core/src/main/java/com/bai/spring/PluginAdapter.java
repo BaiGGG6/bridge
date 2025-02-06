@@ -64,7 +64,7 @@ public enum PluginAdapter {
         for (BootClassEnum value : BootClassEnum.values()) {
             BootClassProcessorService processor = BootClassProcessorFactory.INSTANCE.getProcessor(value);
             // 进行加载
-            processor.process(currentAppContext, clsMap.getOrDefault(value, new ArrayList<>()), pluginKey);
+            processor.process(currentAppContext, clsMap.getOrDefault(value, new ArrayList<>()), pluginMeta);
         }
     }
 
@@ -80,7 +80,7 @@ public enum PluginAdapter {
         for (BootClassEnum value : BootClassEnum.values()) {
             BootClassProcessorService processor = BootClassProcessorFactory.INSTANCE.getProcessor(value);
             // 进行加载
-            processor.release(appContext, clsMap.getOrDefault(value, new ArrayList<>()), pluginKey);
+            processor.release(appContext, clsMap.getOrDefault(value, new ArrayList<>()), pluginMeta);
         }
         // 从上下文中心释放
         ContextCacheCenter.INSTANCE.releaseContext(pluginKey);

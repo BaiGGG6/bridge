@@ -58,11 +58,11 @@ public class PluginProcessor {
                             // 自动加载
                             autoLoadJarAll(jarFile, currentClassLoader, pluginMeta);
                         }
+                        log.info("成功加载插件：{} | {} | {}, 加载模式: {}, 空间模式：{}, 耗时：{} ms", fileInfo.getName(), pluginMeta.getSign(), pluginMeta.getVersion(), pluginMeta.getLoadMode().name(), pluginMeta.getSpaceMode().name(), System.currentTimeMillis() - start);
                     } catch (Exception | Error e) {
                         log.error("当前插件加载失败: {}", fileInfo.getName(), e);
                         releasePlugin(pluginMeta);
                     }
-                    log.info("成功加载插件：{} | {} | {}, 加载模式: {}, 空间模式：{}, 耗时：{} ms", fileInfo.getName(), pluginMeta.getSign(), pluginMeta.getVersion(), pluginMeta.getLoadMode().name(), pluginMeta.getSpaceMode().name(), System.currentTimeMillis() - start);
                 }
             }
         }

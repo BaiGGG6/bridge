@@ -1,5 +1,6 @@
 package com.bai.bridge.model;
 
+import com.bai.bridge.base.BridgeCoreConstants;
 import com.bai.bridge.model.enums.LoadMode;
 import com.bai.bridge.model.enums.SpaceMode;
 import lombok.AllArgsConstructor;
@@ -59,6 +60,10 @@ public class PluginMeta {
             result.add(loadClassPath.replace('.', '/'));
         }
         return result;
+    }
+
+    public String getPluginKey(){
+        return sign + BridgeCoreConstants.SEPARATE + version;
     }
 
 }

@@ -1,9 +1,12 @@
 package com.bai.spring.processor;
 
+import com.bai.bridge.model.PluginMeta;
+import com.bai.spring.BridgeSpringConstants;
 import com.bai.spring.injector.UrlCacheCenter;
 import com.bai.spring.model.InterfaceMethodAnalyse;
 import com.bai.spring.injector.MvcUrlInjector;
 import com.bai.spring.model.enums.BootClassEnum;
+import com.bai.spring.model.enums.BootUrlCoverEnum;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
@@ -26,7 +29,7 @@ public class ControllerProcessor implements BootClassProcessorService{
     }
 
     @Override
-    public void process(ApplicationContext applicationContext, List<Class<?>> clsList, String pluginKey) {
+    public void process(ApplicationContext applicationContext, List<Class<?>> clsList, PluginMeta pluginMeta) {
         // 加载进入ioc容器
         clsList.forEach(cls -> {
             ConfigurableApplicationContext configurableApplicationContext = (ConfigurableApplicationContext) applicationContext;
@@ -36,7 +39,7 @@ public class ControllerProcessor implements BootClassProcessorService{
             beanFactory.registerBeanDefinition(cls.getName(), beanDefinitionBuilder.getBeanDefinition());
         });
         // 获取url注入器
-        MvcUrlInjector mvcUrlInjector = new MvcUrlInjector(applicationContext);
+        MvcUrlInjector mvcUrlInjector = new MvcUrlInjector(applicationContext, BootUrlCoverEnum.getValBySign(pluginMeta.getExtendConfig().get(BridgeSpringConstants.CONFIG_INFO_URL_COVER)));
         // 构建config
         RequestMappingHandlerMapping requestMappingHandlerMapping = applicationContext.getBean(RequestMappingHandlerMapping.class);
         RequestMappingInfo.BuilderConfiguration config = new RequestMappingInfo.BuilderConfiguration();
@@ -60,7 +63,7 @@ public class ControllerProcessor implements BootClassProcessorService{
                     continue;
                 }
                 analyseInfo.buildFinalPath(prePaths);
-                analyseInfo.buildMethodRequestInfoMapping(config, declaredMethod, cls, pluginKey);
+                analyseInfo.buildMethodRequestInfoMapping(config, declaredMethod, cls, pluginMeta.getPluginKey());
                 // 注入mvc
                 mvcUrlInjector.inject(analyseInfo.getMethodRequestInfoMapping());
             }
@@ -68,7 +71,7 @@ public class ControllerProcessor implements BootClassProcessorService{
     }
 
     @Override
-    public void release(ApplicationContext applicationContext, List<Class<?>> clsList, String pluginKey) {
+    public void release(ApplicationContext applicationContext, List<Class<?>> clsList, PluginMeta pluginMeta) {
         clsList.forEach(cls -> {
             ConfigurableApplicationContext configurableApplicationContext = (ConfigurableApplicationContext) applicationContext;
             DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) configurableApplicationContext.getBeanFactory();
@@ -77,7 +80,7 @@ public class ControllerProcessor implements BootClassProcessorService{
             beanFactory.destroyBean(cls.getName());
         });
         // 获取url注入器
-        MvcUrlInjector mvcUrlInjector = new MvcUrlInjector(applicationContext);
+        MvcUrlInjector mvcUrlInjector = new MvcUrlInjector(applicationContext, BootUrlCoverEnum.getValBySign(pluginMeta.getExtendConfig().get(BridgeSpringConstants.CONFIG_INFO_URL_COVER)));
         // 构建config
         RequestMappingHandlerMapping requestMappingHandlerMapping = applicationContext.getBean(RequestMappingHandlerMapping.class);
         RequestMappingInfo.BuilderConfiguration config = new RequestMappingInfo.BuilderConfiguration();
@@ -102,7 +105,7 @@ public class ControllerProcessor implements BootClassProcessorService{
                 }
                 // 构建最终地址
                 analyseInfo.buildFinalPath(prePaths);
-                analyseInfo.buildMethodRequestInfoMapping(config, declaredMethod, cls, pluginKey);
+                analyseInfo.buildMethodRequestInfoMapping(config, declaredMethod, cls, pluginMeta.getPluginKey());
                 // 注入mvc
                 mvcUrlInjector.release(analyseInfo.getMethodRequestInfoMapping());
             }

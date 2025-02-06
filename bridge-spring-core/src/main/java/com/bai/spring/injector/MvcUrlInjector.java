@@ -24,12 +24,13 @@ public class MvcUrlInjector implements UrlInjector {
 
     private ApplicationContext applicationContext;
 
-    private Boolean cover = true;
+    private Boolean cover;
 
-    public MvcUrlInjector(ApplicationContext context) {
+    public MvcUrlInjector(ApplicationContext context, Boolean cover) {
         applicationContext = context;
         requestMappingHandlerMapping = context.getBean(RequestMappingHandlerMapping.class);
         requestMappingHandlerAdapter = context.getBean(RequestMappingHandlerAdapter.class);
+        this.cover = cover;
     }
 
     @Override
