@@ -21,8 +21,8 @@ public class SpringBootListener implements ApplicationListener<ApplicationReadyE
         UrlCacheCenter.INSTANCE.init(applicationContext);
         ContextCacheCenter.INSTANCE.init(applicationContext);
         PluginAdapter.INSTANCE.init(applicationContext);
+        PluginStarter.init();
         log.info("boot兼容插件出初始化完成, 耗时：{} ms", System.currentTimeMillis() - start);
-        PluginStarter.start();
     }
 
 }

@@ -21,7 +21,7 @@ public class BridgeCoreConstants {
     // 隔离模式
     public static final String CONFIG_INFO_SPACE_MODE = "plugin.space.mode";
 
-    public static final String SEPARATE = ":";
+    public static final String SEPARATE = "_";
 
 
 }

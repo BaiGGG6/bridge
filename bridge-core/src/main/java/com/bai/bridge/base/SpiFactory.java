@@ -15,7 +15,7 @@ public class SpiFactory {
 
     private static final HashMap<Class<?>, List<Object>> spiCache = new HashMap<>();
 
-    public static void init(){
+    static {
         ServiceLoader<PluginAnalyse> load = ServiceLoader.load(PluginAnalyse.class);
         load.iterator().forEachRemaining(item -> {
             List<Object> objectList = spiCache.getOrDefault(PluginAnalyse.class, new ArrayList<>());

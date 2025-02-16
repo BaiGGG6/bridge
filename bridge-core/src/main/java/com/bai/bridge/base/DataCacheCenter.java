@@ -23,13 +23,17 @@ public enum DataCacheCenter {
     private Map<String, List<Class<?>>> slotImplMap = new HashMap<>();
 
     /**
-     * 构建key sign:version
+     * 构建key sign|version
      * @param sign
      * @param version
      * @return
      */
     private String buildKey(String sign, String version){
         return sign + BridgeCoreConstants.SEPARATE + version;
+    }
+
+    public boolean pluginContains(PluginMeta pluginMeta){
+        return pluginMetaMap.containsKey(buildKey(pluginMeta.getSign(), pluginMeta.getVersion()));
     }
 
     public void landingPluginInfo(String sign, String version, PluginMeta pluginMeta, List<Class<?>> classList){
@@ -86,6 +90,10 @@ public enum DataCacheCenter {
         if(classList.isEmpty()){
             slotImplMap.remove(slotName);
         }
+    }
+
+    public Map<String, PluginMeta> getSignPluginMetaMap(){
+        return pluginMetaMap;
     }
 
     public List<Map> getAllInfo(){

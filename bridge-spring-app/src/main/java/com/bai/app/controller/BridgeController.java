@@ -1,58 +1,63 @@
 package com.bai.app.controller;
 
-import cn.hutool.json.JSONUtil;
-import com.bai.bridge.PluginProcessor;
-import com.bai.bridge.base.DataCacheCenter;
+import com.bai.app.model.PluginRecord;
+import com.bai.app.service.BridgeService;
+import com.bai.bridge.Exception.PluginException;
 import com.bai.bridge.model.PluginMeta;
-import com.bai.app.PluginA;
-import com.bai.app.PluginB;
-import com.bai.spring.injector.UrlCacheCenter;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.Cleanup;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
+@RequestMapping("/bridge/plugin")
 public class BridgeController {
 
-    @GetMapping("/pluginA")
-    public void testPluginA() {
-        PluginA slotImpl = DataCacheCenter.INSTANCE.getSlotImpl(PluginA.class);
-        if (slotImpl != null) {
-            System.out.println("当前是app");
-            System.out.println(slotImpl.execute());
-        }
+    @Autowired
+    private BridgeService bridgeService;
+
+    /**
+     * 获取所有的插件
+     * @return
+     */
+    @GetMapping("/list")
+    public List<PluginRecord> listPlugin(){
+        return bridgeService.listPlugin();
     }
 
-    @GetMapping("/pluginB")
-    public void testPluginB() {
-        PluginB slotImpl = DataCacheCenter.INSTANCE.getSlotImpl(PluginB.class);
-        if (slotImpl != null) {
-            System.out.println(slotImpl.execute());
-        }
+    /**
+     * 上传插件
+     * @param pluginFile
+     * @return
+     */
+    @PostMapping("/upload")
+    public PluginMeta uploadPlugin(@RequestParam("pluginFile") MultipartFile pluginFile){
+        return bridgeService.uploadPlugin(pluginFile);
     }
 
-    @GetMapping("/pluginRun")
-    public String getPluginRunTimeInfos() {
-        String result = JSONUtil.toJsonStr(DataCacheCenter.INSTANCE.getAllInfo());
-        System.out.println(result);
-        return result;
+    /**
+     * 加载插件
+     * @param pluginRecord
+     * @return
+     */
+    @PostMapping("/load")
+    public PluginMeta loadPlugin(PluginRecord pluginRecord){
+        return bridgeService.loadPlugin(pluginRecord);
     }
 
-    @GetMapping("/pluginRelease")
-    public String releasePlugin(String sign, String version){
-        PluginMeta pluginMeta = DataCacheCenter.INSTANCE.getPluginMeta(sign, version);
-        if(pluginMeta == null){
-            return null;
-        }
-        PluginProcessor.releasePlugin(pluginMeta);
-        return "success";
+    /**
+     * 释放插件
+     * @param pluginRecord
+     * @return
+     */
+    @PostMapping("/release")
+    public Boolean releasePlugin(PluginRecord pluginRecord){
+        return bridgeService.releasePlugin(pluginRecord);
     }
 
-    @GetMapping("/urlRun")
-    public String getUrlCenterData(){
-        System.out.println(UrlCacheCenter.INSTANCE.getMap());
-        return JSONUtil.toJsonStr(UrlCacheCenter.INSTANCE.getMap());
-    }
+
 
 
 

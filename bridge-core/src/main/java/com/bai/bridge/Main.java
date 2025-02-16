@@ -1,8 +1,6 @@
 package com.bai.bridge;
 
 
-import com.bai.bridge.base.DataCacheCenter;
-
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,7 +22,7 @@ public class Main {
 
         System.out.println("Hello, World!");
 
-        PluginStarter.start();
+        PluginProcessor.bootstrapFoldPlugin();
 
 //        PluginA pluginAImpl = DataCacheCenter.getSlotImpl(PluginA.class);
 //        PluginB pluginBImpl = DataCacheCenter.getSlotImpl(PluginB.class);
