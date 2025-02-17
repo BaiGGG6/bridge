@@ -45,7 +45,7 @@ public class MvcUrlInjector implements UrlInjector {
             requestMappingHandlerMapping.unregisterMapping(methodRequestInfoMapping.getRequestMappingInfo());
             requestMappingHandlerAdapter.afterPropertiesSet();
         }
-        log.info("注入url：{}", JSONUtil.toJsonStr(methodRequestInfoMapping));
+//        log.info("注入url：{}", JSONUtil.toJsonStr(methodRequestInfoMapping));
         Object targetBean = applicationContext.getBean(methodRequestInfoMapping.getCls());
         requestMappingHandlerMapping.registerMapping(methodRequestInfoMapping.getRequestMappingInfo(), targetBean, methodRequestInfoMapping.getMethod());
         requestMappingHandlerAdapter.afterPropertiesSet();

@@ -1,6 +1,7 @@
 package com.bai.bridge.base;
 
-import com.bai.bridge.analysis.service.PluginAnalyse;
+import com.bai.bridge.PluginStartService;
+import com.bai.bridge.analysis.service.PluginAnalyseService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,11 +17,16 @@ public class SpiFactory {
     private static final HashMap<Class<?>, List<Object>> spiCache = new HashMap<>();
 
     static {
-        ServiceLoader<PluginAnalyse> load = ServiceLoader.load(PluginAnalyse.class);
+        loadClass(PluginAnalyseService.class);
+        loadClass(PluginStartService.class);
+    }
+
+    private static <T> void loadClass(Class<T> cls){
+        ServiceLoader<T> load = ServiceLoader.load(cls);
         load.iterator().forEachRemaining(item -> {
-            List<Object> objectList = spiCache.getOrDefault(PluginAnalyse.class, new ArrayList<>());
+            List<Object> objectList = spiCache.getOrDefault(cls, new ArrayList<>());
             objectList.add(item);
-            spiCache.put(PluginAnalyse.class, objectList);
+            spiCache.put(cls, objectList);
         });
     }
 

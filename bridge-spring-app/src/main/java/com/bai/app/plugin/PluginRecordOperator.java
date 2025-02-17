@@ -18,6 +18,7 @@ import org.springframework.util.StringUtils;
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -76,18 +77,45 @@ public class PluginRecordOperator {
         return new ArrayList<>(pluginRecordMap.values());
     }
 
+    public PluginRecord findById(String id){
+        for (PluginRecord value : pluginRecordMap.values()) {
+            if(value.getId().equals(id)){
+                return value;
+            }
+        }
+        return null;
+    }
+
+    public PluginRecord findBySignAndVersion(String sign, String version){
+        return pluginRecordMap.get(sign + BridgeCoreConstants.SEPARATE + version);
+    }
+
     public void savePluginRecord(PluginRecord pluginRecord){
+        pluginRecord.setCreateTime(LocalDateTime.now());
         pluginRecordMap.put(pluginRecord.getKey(), pluginRecord);
         persistenceRecords();
     }
 
     public void updatePluginRecord(PluginRecord pluginRecord){
-        pluginRecordMap.put(pluginRecord.getKey(), pluginRecord);
+        PluginRecord savePluginRecord = pluginRecordMap.get(pluginRecord.getKey());
+        savePluginRecord.setStatus(pluginRecord.getStatus());
+        savePluginRecord.setUpdateTime(pluginRecord.getUpdateTime());
+        pluginRecordMap.put(pluginRecord.getKey(), savePluginRecord);
         persistenceRecords();
     }
 
-    public void deletePluginRecord(PluginRecord pluginRecord){
-        pluginRecordMap.remove(pluginRecord.getKey());
+    public void deletePluginRecord(String sign, String version){
+        pluginRecordMap.remove(sign + BridgeCoreConstants.SEPARATE + version);
+        persistenceRecords();
+    }
+
+    public void deletePluginRecord(String id){
+        for (PluginRecord value : pluginRecordMap.values()) {
+            if(value.getId().equals(id)){
+                pluginRecordMap.remove(value.getKey());
+                break;
+            }
+        }
         persistenceRecords();
     }
 

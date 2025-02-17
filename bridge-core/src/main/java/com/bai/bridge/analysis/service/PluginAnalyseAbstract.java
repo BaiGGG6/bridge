@@ -2,7 +2,7 @@ package com.bai.bridge.analysis.service;
 
 import java.util.*;
 
-public abstract class PluginAnalyseAbstract implements PluginAnalyse {
+public abstract class PluginAnalyseAbstract implements PluginAnalyseService {
 
 
     @Override

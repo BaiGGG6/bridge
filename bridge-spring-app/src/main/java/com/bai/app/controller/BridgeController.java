@@ -43,7 +43,7 @@ public class BridgeController {
      * @return
      */
     @PostMapping("/load")
-    public PluginMeta loadPlugin(PluginRecord pluginRecord){
+    public PluginMeta loadPlugin(@RequestBody PluginRecord pluginRecord){
         return bridgeService.loadPlugin(pluginRecord);
     }
 
@@ -53,8 +53,18 @@ public class BridgeController {
      * @return
      */
     @PostMapping("/release")
-    public Boolean releasePlugin(PluginRecord pluginRecord){
+    public Boolean releasePlugin(@RequestBody PluginRecord pluginRecord){
         return bridgeService.releasePlugin(pluginRecord);
+    }
+
+    /**
+     * 删除插件
+     * @param pluginRecord
+     * @return
+     */
+    @DeleteMapping("/delete")
+    public Boolean deletePlugin(@RequestBody PluginRecord pluginRecord){
+        return bridgeService.deletePlugin(pluginRecord);
     }
 
 

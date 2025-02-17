@@ -4,7 +4,7 @@ import com.bai.bridge.model.PluginMeta;
 
 import java.util.Map;
 
-public interface PluginAnalyse {
+public interface PluginAnalyseService {
 
     void analyse(PluginMeta pluginMeta);
 

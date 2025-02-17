@@ -1,8 +1,7 @@
 package com.bai.bridge;
 
-import cn.hutool.json.JSONUtil;
 import com.bai.bridge.Exception.PluginException;
-import com.bai.bridge.analysis.service.PluginAnalyse;
+import com.bai.bridge.analysis.service.PluginAnalyseService;
 import com.bai.bridge.base.BridgeCoreConstants;
 import com.bai.bridge.base.DataCacheCenter;
 import com.bai.bridge.base.SpiFactory;
@@ -25,7 +24,7 @@ import java.util.jar.JarFile;
 @Slf4j
 public class PluginProcessor {
 
-    private static List<PluginAnalyse> analysies;
+    private static List<PluginAnalyseService> analysies;
 
     /**
      * 当前运行文件夹
@@ -39,7 +38,7 @@ public class PluginProcessor {
 
     static {
         // 初始化adapter
-        analysies = SpiFactory.get(PluginAnalyse.class);
+        analysies = SpiFactory.get(PluginAnalyseService.class);
     }
 
     public static void bootstrapFoldPlugin(){
@@ -76,8 +75,7 @@ public class PluginProcessor {
             pluginMeta = findToBuildPluginMeta(file);
             // 校验是否已经存在当前插件，若存在则打回
             if(DataCacheCenter.INSTANCE.pluginContains(pluginMeta)){
-                log.error("当前插件已存在:{}", pluginMeta.getSign());
-                return pluginMeta;
+                throw new PluginException("当前插件已经被加载");
             }
             // 构建classLoader
             ClassLoader currentClassLoader = ClassLoaderFactory.INSTANCE.getBridgeJarClassLoader(file, jarFile, pluginMeta.getSpaceMode());

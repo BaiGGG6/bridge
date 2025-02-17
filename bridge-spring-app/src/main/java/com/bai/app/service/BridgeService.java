@@ -15,4 +15,6 @@ public interface BridgeService {
     PluginMeta uploadPlugin(MultipartFile pluginFile);
 
     List<PluginRecord> listPlugin();
+
+    Boolean deletePlugin(PluginRecord pluginRecord);
 }

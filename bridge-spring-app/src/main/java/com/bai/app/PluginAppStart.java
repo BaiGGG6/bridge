@@ -25,7 +25,7 @@ import static com.bai.app.model.BridgeAppConstants.pluginFoldPath;
 public class PluginAppStart implements PluginStartService {
 
     @Getter
-    private static Boolean isReady = false;
+    private static volatile Boolean isReady = false;
 
     /**
      * 执行加载
@@ -45,9 +45,8 @@ public class PluginAppStart implements PluginStartService {
                 }, ThreadPoolConfig.BridgeThreadPool));
             }
         }
-
         // 等待所有线程执行完
-        CompletableFuture.allOf(completableFutures.toArray(new CompletableFuture[1])).join();
+        CompletableFuture.allOf(completableFutures.toArray(new CompletableFuture[0])).join();
         // 修改当前执行好的状态
         isReady = true;
         log.info("启动初始化所有插件完成");
